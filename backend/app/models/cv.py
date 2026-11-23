@@ -28,3 +28,4 @@ class Report(BaseModel):
     score: Score
     summary: str
     suggestions: list[str]
+    questions: list[str] = []  # interview questions from the recruiter agent

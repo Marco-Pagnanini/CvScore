@@ -1,8 +1,9 @@
 export interface AgentLog { agent: string; text: string; done: boolean }
 
-const AGENTS = ["orchestrator", "jd_analyst", "cv_matcher", "evaluator"];
+const AGENTS = ["orchestrator", "jd_analyst", "cv_matcher", "evaluator", "recruiter"];
 const LABEL: Record<string, string> = {
   orchestrator: "Orchestrator", jd_analyst: "Job Description Analyst", cv_matcher: "CV Matcher", evaluator: "Evaluator",
+  recruiter: "Recruiter",
 };
 
 export default function LiveView({ logs }: { logs: AgentLog[] }) {

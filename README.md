@@ -1,59 +1,59 @@
 # CvScore
 
-Mini Agentic SOA per il laboratorio: carichi un CV (PDF) e incolli una job description, un'orchestra di agenti
-restituisce uno score 0-100 spiegato requisito per requisito, dei suggerimenti e le domande da colloquio.
+A small Agentic SOA for the lab: you upload a CV (PDF) and paste a job description, and a team of agents returns
+a 0-100 score explained requirement by requirement, suggestions to improve the CV and questions for the job interview.
 
 ```
 FastAPI (POST /api/analyze)
   └─ Orchestrator
-       ├─ JD Analyst   → requisiti ("must" / "nice")
-       ├─ CV Matcher   → verdetto yes / partial / no per ogni requisito (tool: read_cv)
-       ├─ Evaluator    → score, riassunto, suggerimenti (tool: compute_score)
-       └─ Recruiter    → domande per il colloquio
-MCP server (/mcp) → services/cv.py (legge il PDF), services/score.py (la formula)
+       ├─ JD Analyst   → requirements ("must" / "nice")
+       ├─ CV Matcher   → verdict yes / partial / no for each requirement (tool: read_cv)
+       ├─ Evaluator    → score, summary, suggestions (tool: compute_score)
+       └─ Recruiter    → interview questions
+MCP server (/mcp) → services/cv.py (reads the PDF), services/score.py (the formula)
 ```
 
-## Avvio
+## Run it
 
-Servono Docker e una API key Anthropic.
+You need Docker and an Anthropic API key.
 
 ```bash
-cp .env.example .env        # poi scrivi la tua ANTHROPIC_API_KEY nel file .env
+cp .env.example .env        # then write your ANTHROPIC_API_KEY in the .env file
 docker compose up -d --build
 ```
 
-Apri http://localhost:3000.
+Open http://localhost:3000.
 
-- Le modifiche a `backend/app` si ricaricano da sole al salvataggio.
-- Le modifiche al frontend richiedono di nuovo `docker compose up -d --build`.
-- Log del backend: `docker compose logs -f backend`.
+- Changes to `backend/app` reload by themselves when you save.
+- Changes to the frontend need `docker compose up -d --build` again.
+- Backend logs: `docker compose logs -f backend`.
 
-## Il laboratorio, in ordine
+## The lab, in order
 
-| # | Cosa fai | Dove | Come sai di aver finito |
+| # | What you do | Where | How you know you are done |
 |---|---|---|---|
-| 1 | **Exercise 1**: scrivi i due tool MCP `read_cv` e `compute_score` | `backend/app/mcp_tools/tools.py` | `docker compose exec backend pytest tests/test_tools.py -q` è verde e l'analisi di un CV si completa |
-| 2 | **Exercise 2**: prompt injection, da `VULNERABLE_PROMPT` a `SAFE_PROMPT` | `backend/app/agents/cv_matcher.py` | Con `test_data/cv_injected.pdf` lo score cambia tra i due prompt |
-| 3 | **Assignment**: scrivi l'agente `recruiter` | `backend/app/agents/recruiter.py` | Compare la sezione INTERVIEW QUESTIONS nel risultato. Guida: `exercise_guide/Assignment/guideline_recruiter.md` |
+| 1 | **Exercise 1**: write the two MCP tools `read_cv` and `compute_score` | `backend/app/mcp_tools/tools.py` | `docker compose exec backend pytest tests/test_tools.py -q` is green and an analysis of a CV completes |
+| 2 | **Exercise 2**: prompt injection, from `VULNERABLE_PROMPT` to `SAFE_PROMPT` | `backend/app/agents/cv_matcher.py` | With `test_data/cv_injected.pdf` the score changes between the two prompts |
+| 3 | **Assignment**: write the `recruiter` agent | `backend/app/agents/recruiter.py` | The INTERVIEW QUESTIONS section appears in the result. Guide: `exercise_guide/Assignment/guideline_recruiter.md` |
 
-Le slide del laboratorio descrivono ogni passo. Se un passo non si ricarica, la causa più comune è il container che usa ancora
-il codice vecchio: `docker compose up -d --build`.
+The lab slides describe every step. If a change does not show up, the most common cause is the container still running
+the old code: `docker compose up -d --build`.
 
-## Dati di prova
+## Test data
 
 In `exercise_guide/test_data/`:
 
-- `job_applications_test.md`: sette job description da incollare nel form (match alto, parziale, nullo, testo minimo, lingue miste).
-- `cv_clean.pdf`: CV di un junior web developer (HTML, CSS, un po' di JavaScript).
-- `cv_injected.pdf`: lo stesso CV con una nota "HR" scritta in bianco su bianco, invisibile a occhio ma letta dal modello.
-  Per Exercise 2 usalo con la job description n. 6 ("Junior Python developer, conoscenza base di Git").
+- `job_applications_test.md`: seven job descriptions to paste into the form (strong match, partial match, no match, only "must" requirements, minimal text, marketing noise).
+- `cv_clean.pdf`: the CV of a junior web developer (HTML, CSS, a bit of JavaScript).
+- `cv_injected.pdf`: the same CV with an "HR" note written in white on white: invisible to the eye, but read by the model.
+  For Exercise 2 use it with job description no. 6 ("Junior Python developer, basic knowledge of Git").
 
-Lo stesso CV e la stessa job description restituiscono sempre lo stesso report (cache in memoria, si svuota al riavvio del server).
+The same CV and the same job description always return the same report (in-memory cache, cleared when the server restarts).
 
-## Test
+## Tests
 
 ```bash
 docker compose exec backend pytest -q
 ```
 
-`test_score.py` controlla la formula dello score, `test_tools.py` i tool MCP dell'Exercise 1.
+`test_score.py` checks the score formula, `test_tools.py` checks the MCP tools of Exercise 1.

@@ -1,9 +1,9 @@
-# Job application di test
+# Test job applications
 
-Ogni sezione `##` è una job description da incollare nel form.
-I casi coprono: match alto, match parziale, nessun match, solo requisiti "must", testo minimo, lingue miste.
+Each `##` section is a job description to paste into the form.
+The cases cover: strong match, partial match, no match, only "must" requirements, minimal text, marketing noise.
 
-## 1. Backend Python Developer (match alto, EN)
+## 1. Backend Python Developer (strong match)
 
 We are looking for a Backend Developer to join our platform team.
 
@@ -19,22 +19,22 @@ Nice to have:
 - Knowledge of AWS
 - Contributions to open source projects
 
-## 2. Sviluppatore Frontend React (match parziale, IT)
+## 2. Frontend React Developer (partial match)
 
-Cerchiamo uno sviluppatore frontend per il nostro gestionale web.
+We are looking for a frontend developer for our web management application.
 
-Requisiti obbligatori:
-- Almeno 2 anni di esperienza con React e TypeScript
-- Ottima conoscenza di HTML5, CSS3 e design responsive
-- Esperienza con chiamate REST API
-- Utilizzo di Git in team
+Required:
+- At least 2 years of experience with React and TypeScript
+- Excellent knowledge of HTML5, CSS3 and responsive design
+- Experience with REST API calls
+- Use of Git in a team
 
-Costituiscono titolo preferenziale:
-- Conoscenza di Next.js
-- Esperienza con test (Jest, Playwright)
-- Sensibilità per UX e accessibilità
+Preferred:
+- Knowledge of Next.js
+- Experience with testing (Jest, Playwright)
+- Sensitivity to UX and accessibility
 
-## 3. Data Scientist (match parziale, EN)
+## 3. Data Scientist (partial match)
 
 Join our analytics team to build predictive models.
 
@@ -49,21 +49,21 @@ Preferred:
 - Knowledge of MLOps tools (MLflow, Airflow)
 - Publications or Kaggle competitions
 
-## 4. Infermiere di reparto (nessun match, IT)
+## 4. Ward Nurse (no match)
 
-Struttura ospedaliera privata ricerca infermiere/a per reparto di medicina generale.
+A private hospital is looking for a nurse for its general medicine ward.
 
-Requisiti:
-- Laurea in Infermieristica
-- Iscrizione all'albo OPI
-- Disponibilità a turni notturni e festivi
-- Esperienza minima di 1 anno in reparto ospedaliero
+Requirements:
+- Degree in Nursing
+- Registration with the professional nursing register
+- Availability for night and holiday shifts
+- At least 1 year of experience in a hospital ward
 
-Gradita:
-- Esperienza in area critica
-- Certificazione BLSD
+Nice to have:
+- Experience in critical care
+- BLS-D certification (basic life support and defibrillation)
 
-## 5. DevOps Engineer (solo requisiti must, EN)
+## 5. DevOps Engineer (only "must" requirements)
 
 Requirements (all mandatory):
 - Linux system administration
@@ -72,24 +72,24 @@ Requirements (all mandatory):
 - Infrastructure as Code with Terraform
 - Monitoring with Prometheus and Grafana
 
-## 6. Junior Python (testo minimo)
+## 6. Junior Python (minimal text)
 
-Junior Python developer, conoscenza base di Git.
+Junior Python developer, basic knowledge of Git.
 
-## 7. Full Stack Engineer (lingue miste + testo marketing)
+## 7. Full Stack Engineer (marketing text mixed with requirements)
 
-Siamo una startup in forte crescita che sta rivoluzionando il mondo del food delivery! Il nostro team è giovane, dinamico e ama le sfide. Offriamo smart working, buoni pasto e un ambiente stimolante.
+We are a fast-growing startup revolutionizing the world of food delivery! Our team is young, dynamic and loves a challenge. We offer remote work, meal vouchers and a stimulating environment.
 
 What you will do:
 - Develop new features end to end, from the API to the UI
 
-Cosa cerchiamo:
-- Esperienza con Python (FastAPI) e React
-- Conoscenza di PostgreSQL
-- Buona conoscenza della lingua inglese e italiana
-- Capacità di lavorare in autonomia
+What we are looking for:
+- Experience with Python (FastAPI) and React
+- Knowledge of PostgreSQL
+- Good command of written and spoken English
+- Ability to work independently
 
 Plus:
-- Esperienza in startup
-- Conoscenza di Docker
-- Esperienza con pagamenti online (Stripe)
+- Startup experience
+- Knowledge of Docker
+- Experience with online payments (Stripe)

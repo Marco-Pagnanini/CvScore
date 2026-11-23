@@ -1,88 +1,88 @@
-# Esercizio: scrivere l'agente `recruiter`
+# Exercise: write the `recruiter` agent
 
-**Obiettivo:** completare l'agente `recruiter`, che genera le domande che un recruiter farebbe al colloquio per la job description inserita.
-Le domande compaiono nella pagina del risultato, nella sezione **INTERVIEW QUESTIONS**.
+**Goal:** complete the `recruiter` agent, which generates the questions a recruiter would ask a candidate in the job interview for the job description you enter.
+The questions appear in the result page, in the **INTERVIEW QUESTIONS** section.
 
-**Cosa si impara**
-- Com'è fatto un agente: prompt + tool permessi + una chiamata a `run(...)`.
-- Come si chiede a un LLM una risposta in formato fisso (un array JSON di stringhe).
-- Come l'orchestrator usa un sub-agente senza che tu debba toccare altro.
+**What you learn**
+- What an agent looks like: prompt + allowed tools + one call to `run(...)`.
+- How to ask an LLM for an answer in a fixed format (a JSON array of strings).
+- How the orchestrator uses a sub-agent without you touching anything else.
 
-**Tempo stimato:** 10-15 minuti. **File:** 1 modificato (`backend/app/agents/recruiter.py`), una decina di righe.
-
----
-
-## Cosa c'è già
-
-- L'orchestrator, il modello `Report` e la UI sono già collegati al recruiter. **Tu scrivi solo `recruiter.py`.**
-- Finché non lo scrivi, l'agente restituisce una lista vuota: l'app funziona come prima, la sezione delle domande non compare e lo step "Recruiter" nel log resta grigio.
+**Estimated time:** 10-15 minutes. **Files:** 1 modified (`backend/app/agents/recruiter.py`), about ten lines.
 
 ---
 
-## Passo 0: avviare l'app e vedere com'è adesso
+## What is already there
+
+- The orchestrator, the `Report` model and the UI are already wired to the recruiter. **You only write `recruiter.py`.**
+- Until you write it, the agent returns an empty list: the app works as before, the questions section does not appear and the "Recruiter" step in the live log stays grey.
+
+---
+
+## Step 0: start the app and see how it looks now
 
 ```bash
 cp .env.example .env
 ```
 
-Scrivi la tua `ANTHROPIC_API_KEY` nel file `.env`, poi:
+Write your `ANTHROPIC_API_KEY` in the `.env` file, then:
 
 ```bash
 docker compose up -d --build
 ```
 
-Apri http://localhost:3000, carica un CV in PDF (per esempio `test_data/cv_clean.pdf`) e incolla una job description (vedi `test_data/job_applications_test.md`).
-Nel risultato **non** c'è la sezione "INTERVIEW QUESTIONS".
+Open http://localhost:3000, upload a PDF CV (for example `test_data/cv_clean.pdf`) and paste a job description (see `test_data/job_applications_test.md`).
+The result does **not** contain the "INTERVIEW QUESTIONS" section.
 
 ---
 
-## Passo 1: leggere
+## Step 1: read
 
-Apri `backend/app/agents/recruiter.py` e leggi i commenti in cima: spiegano obiettivo, formato della risposta e i 3 punti da completare.
-Per un esempio di agente completo e senza tool guarda `backend/app/agents/jd_analyst.py`.
+Open `backend/app/agents/recruiter.py` and read the comments at the top: they explain the goal, the answer format and the 3 points to complete.
+For an example of a complete agent without tools, look at `backend/app/agents/jd_analyst.py`.
 
 ---
 
-## Passo 2: scrivere i 3 pezzi
+## Step 2: write the 3 pieces
 
-| Pezzo | Cosa deve contenere |
+| Piece | What it must contain |
 |---|---|
-| `SYSTEM_PROMPT` | Chi è l'agente, cosa riceve (i requisiti del lavoro, ciascuno "must" o "nice"), quante domande scrivere, in che ordine, che tipo di domande, e il formato esatto della risposta |
-| `ALLOWED_TOOLS` | La lista dei tool MCP che può usare. Ne ha bisogno di qualcuno? |
-| `run_agent` | Una chiamata a `run(...)`: sostituisce il `return "[]"` provvisorio. Il primo argomento è il nome che compare nel log live |
+| `SYSTEM_PROMPT` | Who the agent is, what it receives (the job requirements, each one "must" or "nice"), how many questions to write, in what order, what kind of questions, and the exact format of the answer |
+| `ALLOWED_TOOLS` | The list of MCP tools it may use. Does it need any? |
+| `run_agent` | One call to `run(...)`: it replaces the temporary `return "[]"`. The first argument is the name shown in the live log |
 
 ---
 
-## Passo 3: provare
+## Step 3: try it
 
-Salva il file. Il backend si riavvia da solo (se non lo fa: `docker compose restart backend`).
-Rilancia un'analisi.
+Save the file. The backend restarts by itself (if it does not: `docker compose restart backend`).
+Run an analysis again.
 
-**Cosa devi vedere:**
-- nel log live lo step **Recruiter** si accende e poi risulta completato;
-- nel risultato compare la sezione **INTERVIEW QUESTIONS** con le domande, la prima è sul requisito più importante.
+**What you should see:**
+- in the live log the **Recruiter** step lights up and then completes;
+- the result shows the **INTERVIEW QUESTIONS** section with the questions, the first one about the most important requirement.
 
 ---
 
-## Se qualcosa non va
+## If something goes wrong
 
-| Sintomo | Causa probabile | Soluzione |
+| Symptom | Probable cause | Fix |
 |---|---|---|
-| Nessuna sezione "INTERVIEW QUESTIONS" | `run_agent` restituisce ancora il valore provvisorio, o `SYSTEM_PROMPT` è vuoto | Ricontrolla il Passo 2 |
-| Errore di validazione sul risultato | La risposta del recruiter non è un array JSON puro (c'è del testo prima o dopo, o un blocco di codice) | Rendi il formato della risposta più esplicito nel prompt |
-| Il risultato arriva subito e il log degli agenti resta vuoto | Stesso CV e stessa job description di una prova precedente: l'app riusa il risultato salvato | Salvare un file in `backend/app` riavvia il server e lo svuota. Oppure cambia CV o job description |
-| Lo score è diverso dalla prova di prima | Il server si è riavviato e l'LLM ha rivalutato il CV da zero: normale, non c'entra il tuo agente | Nessuna |
+| No "INTERVIEW QUESTIONS" section | `run_agent` still returns the temporary value, or `SYSTEM_PROMPT` is empty | Check Step 2 again |
+| Validation error on the result | The recruiter's answer is not a pure JSON array (there is text before or after it, or a code block) | Make the answer format more explicit in the prompt |
+| The result arrives immediately and the agent log stays empty | Same CV and same job description as a previous run: the app reuses the saved result | Saving a file in `backend/app` restarts the server and clears it. Or change the CV or the job description |
+| The score differs from the previous run | The server restarted and the LLM evaluated the CV from scratch: normal, unrelated to your agent | Nothing to do |
 
-Per vedere gli errori del backend: `docker compose logs -f backend`.
+To see the backend errors: `docker compose logs -f backend`.
 
 ---
 
-## Per riflettere
+## To think about
 
-1. Il recruiter riceve i requisiti già estratti e non la job description grezza. Perché è più sicuro?
-2. Lo score cambierebbe se il recruiter scrivesse domande diverse? Perché?
+1. The recruiter receives the requirements already extracted, not the raw job description. Why is that safer?
+2. Would the score change if the recruiter wrote different questions? Why?
 
 ## Bonus
 
-Fai in modo che le domande tocchino i punti deboli del CV (i requisiti con verdetto `no` o `partial`).
-Quali dati servono al recruiter, e in quale file devi cambiare cosa gli passa l'orchestrator?
+Make the questions target the weak points of the CV (the requirements with verdict `no` or `partial`).
+What data does the recruiter need, and in which file do you have to change what the orchestrator passes to it?

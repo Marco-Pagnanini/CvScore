@@ -23,7 +23,7 @@ CACHE: dict[str, dict] = {}
 async def analyze(cv: UploadFile, job_description: str = Form(min_length=20, max_length=10000)):
     data = await cv.read()
     if not data.startswith(b"%PDF") or len(data) > MAX_PDF:
-        raise HTTPException(400, "Serve un PDF di massimo 5 MB")
+        raise HTTPException(400, "A PDF of at most 5 MB is required")
     cv_id = cv_service.save_cv(data)
     queue: asyncio.Queue = asyncio.Queue()
     key = hashlib.sha256(data + job_description.encode()).hexdigest()

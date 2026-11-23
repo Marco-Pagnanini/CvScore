@@ -1,33 +1,33 @@
-# Note per i docenti
+# Instructor notes
 
-Questo file esiste solo nel branch `solution`.
+This file exists only in the `solution` branch.
 
-## Branch
+## Branches
 
-- `main`: versione per gli studenti. `tools.py` ha due TODO vuoti (Exercise 1), `recruiter.py` è uno stub (Assignment).
-- `solution`: come `main`, con `tools.py` e `recruiter.py` completi. Quando cambi `main`, fai il merge di `main` in `solution`.
+- `main`: the student version. `tools.py` has two empty TODOs (Exercise 1) and `recruiter.py` is a stub (Assignment).
+- `solution`: same as `main`, with `tools.py` and `recruiter.py` complete. When you change `main`, merge `main` into `solution`.
 
-L'unico altro punto da toccare a mano è Exercise 2: in `cv_matcher.py` l'ultima riga è
-`SYSTEM_PROMPT = VULNERABLE_PROMPT + RULES`. Per passare al prompt sicuro diventa `SAFE_PROMPT + RULES`
-(non `SAFE_PROMPT` da solo: si perderebbero le regole di verdetto che rendono i risultati ripetibili).
+The only other place to edit by hand is Exercise 2: in `cv_matcher.py` the last line is
+`SYSTEM_PROMPT = VULNERABLE_PROMPT + RULES`. To switch to the safe prompt it becomes `SAFE_PROMPT + RULES`
+(not `SAFE_PROMPT` alone: that would drop the verdict rules that make results repeatable).
 
-## Risposte alle domande di riflessione del recruiter
+## Answers to the recruiter's "to think about" questions
 
-1. **Perché ricevere i requisiti già estratti e non la job description grezza?** La job description è testo scritto da terzi
-   e può contenere marketing, rumore o istruzioni travestite. Il JD Analyst la riduce a requisiti strutturati: il recruiter
-   lavora solo su dati già filtrati, e il suo input ha un formato noto.
-2. **Lo score cambierebbe se il recruiter scrivesse domande diverse?** No. Lo score è calcolato da `services/score.py` a partire
-   dai `matches` del CV Matcher; il recruiter non vede né il CV né i verdetti e il suo output non entra nella formula.
+1. **Why receive the already extracted requirements instead of the raw job description?** The job description is text written
+   by third parties and can contain marketing, noise or disguised instructions. The JD Analyst reduces it to structured
+   requirements: the recruiter only works on data that has already been filtered, and its input has a known format.
+2. **Would the score change if the recruiter wrote different questions?** No. The score is computed by `services/score.py` from
+   the CV Matcher's `matches`; the recruiter sees neither the CV nor the verdicts, and its output never enters the formula.
 
-## Bonus: domande sui punti deboli del CV
+## Bonus: questions about the weak points of the CV
 
-Al recruiter servono i requisiti con verdetto `no` o `partial`, cioè i `matches` del CV Matcher. Va cambiato `orchestrator.py`:
-il passo 4 del prompt deve inviare al recruiter i `matches` (o solo quelli con verdetto `no`/`partial`) invece dei requisiti,
-e il prompt del recruiter deve dire come usarli. Nessun altro file cambia.
+The recruiter needs the requirements with verdict `no` or `partial`, that is the CV Matcher's `matches`. Change `orchestrator.py`:
+step 4 of the prompt must send the `matches` (or only those with verdict `no`/`partial`) to the recruiter instead of the
+requirements, and the recruiter's prompt must say how to use them. No other file changes.
 
-## Controlli prima della lezione
+## Checks before the lesson
 
-- `docker compose exec backend pytest -q` è verde (6 test).
-- Con `test_data/cv_injected.pdf` e la job description n. 6: prompt vulnerabile contro prompt sicuro. Annota gli score reali
-  e confrontali con quelli mostrati nelle slide.
-- Un'analisi completa mostra lo step Recruiter nel log e la sezione INTERVIEW QUESTIONS nel risultato.
+- `docker compose exec backend pytest -q` is green (6 tests).
+- With `test_data/cv_injected.pdf` and job description no. 6: vulnerable prompt versus safe prompt. Write down the real scores
+  and compare them with the ones shown in the slides.
+- A full analysis shows the Recruiter step in the log and the INTERVIEW QUESTIONS section in the result.

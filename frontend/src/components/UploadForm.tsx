@@ -16,9 +16,9 @@ export default function UploadForm({ error, onSubmit }: { error?: string; onSubm
 
   function submit(e: FormEvent) {
     e.preventDefault();
-    if (!cv || cv.type !== "application/pdf") return setFormError("Carica il CV in PDF.");
-    if (cv.size > 5 * 1024 * 1024) return setFormError("Il PDF supera 5 MB.");
-    if (jd.trim().length < 20 || jd.length > MAX_JD) return setFormError("Incolla una job description (20–10000 caratteri).");
+    if (!cv || cv.type !== "application/pdf") return setFormError("Upload your CV as a PDF.");
+    if (cv.size > 5 * 1024 * 1024) return setFormError("The PDF is larger than 5 MB.");
+    if (jd.trim().length < 20 || jd.length > MAX_JD) return setFormError("Paste a job description (20–10000 characters).");
     setFormError("");
     onSubmit(cv, jd);
   }

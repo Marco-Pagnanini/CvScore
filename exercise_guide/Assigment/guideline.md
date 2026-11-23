@@ -24,8 +24,11 @@ async def run_agent(task: str) -> str:   # 3. il ciclo agentico è già scritto 
     return await run("jd_analyst", SYSTEM_PROMPT, ALLOWED_TOOLS, task)
 ```
 
-Il flusso attuale è: `orchestrator` → `jd_analyst` → `cv_matcher` → `evaluator`.
-Il flusso alla fine dell'esercizio sarà: `orchestrator` → `jd_analyst` → `cv_matcher` → `evaluator` → **`advisor`**.
+Il flusso attuale è: `orchestrator` → `jd_analyst` → `cv_matcher` → `evaluator` → `recruiter`.
+Il flusso alla fine dell'esercizio sarà: `orchestrator` → `jd_analyst` → `cv_matcher` → `evaluator` → **`advisor`** → `recruiter`.
+
+> 💡 Nel repo c'è già `backend/app/agents/recruiter.py`: è uno stub per un altro esercizio
+> (`guideline_recruiter.md`). Lascialo com'è: restituisce una lista vuota e non disturba.
 
 ---
 
@@ -61,37 +64,40 @@ async def run_agent(task: str) -> str:
 
 ```python
 # PRIMA
-from app.agents import cv_matcher, evaluator, jd_analyst
+from app.agents import cv_matcher, evaluator, jd_analyst, recruiter
 # DOPO
-from app.agents import advisor, cv_matcher, evaluator, jd_analyst
+from app.agents import advisor, cv_matcher, evaluator, jd_analyst, recruiter
 ```
 
-**2b. Prompt:** aggiungi il passo 4 e prendi `suggestions` dall'advisor.
+**2b. Prompt:** inserisci il nuovo passo 4 per l'advisor (il recruiter scala al passo 5) e prendi `suggestions` dall'advisor.
 
 ```python
 # PRIMA
 3. Send the matches to evaluator -> get score, summary, suggestions.
+4. Send the requirements to recruiter -> get the interview questions.
 ...
-{"matches": [...from cv_matcher], "score": <the "score" object from evaluator>, "summary": <evaluator summary>, "suggestions": <evaluator suggestions>}. No prose."""
+{"matches": [...from cv_matcher], "score": <the "score" object from evaluator>, "summary": <evaluator summary>, "suggestions": <evaluator suggestions>, "questions": <recruiter reply>}. No prose."""
 
 # DOPO
 3. Send the matches to evaluator -> get score and summary.
 4. Send the same matches to advisor -> get the suggestions.
+5. Send the requirements to recruiter -> get the interview questions.
 ...
-{"matches": [...from cv_matcher], "score": <the "score" object from evaluator>, "summary": <evaluator summary>, "suggestions": <advisor reply>}. No prose."""
+{"matches": [...from cv_matcher], "score": <the "score" object from evaluator>, "summary": <evaluator summary>, "suggestions": <advisor reply>, "questions": <recruiter reply>}. No prose."""
 ```
 
 **2c. Tool permessi:** l'orchestrator può chiamare solo gli agenti in questa lista.
 
 ```python
-ALLOWED_TOOLS = ["jd_analyst", "cv_matcher", "evaluator", "advisor"]
+ALLOWED_TOOLS = ["jd_analyst", "cv_matcher", "evaluator", "advisor", "recruiter"]
 ```
 
 **2d. Collegamento nome → funzione:**
 
 ```python
 SUB_AGENTS = {"jd_analyst": jd_analyst.run_agent, "cv_matcher": cv_matcher.run_agent,
-              "evaluator": evaluator.run_agent, "advisor": advisor.run_agent}
+              "evaluator": evaluator.run_agent, "advisor": advisor.run_agent,
+              "recruiter": recruiter.run_agent}
 ```
 
 > 💡 Perché funziona senza altro codice? `runner.py` trasforma ogni voce di `SUB_AGENTS` in un tool
@@ -123,14 +129,18 @@ Reply ONLY with JSON {"score": <the compute_score result>, "summary": "..."}. No
 **Modifica** `frontend/src/components/LiveView.tsx`: aggiungi lo step e la sua etichetta.
 
 ```ts
-const AGENTS = ["orchestrator", "jd_analyst", "cv_matcher", "evaluator", "advisor"];
-const LABEL: Record<string, string> = {
-  orchestrator: "Orchestrator", jd_analyst: "Job Description Analyst", cv_matcher: "CV Matcher", evaluator: "Evaluator",
-  advisor: "Career Advisor",
-};
+// PRIMA
+const AGENTS = ["orchestrator", "jd_analyst", "cv_matcher", "evaluator", "recruiter"];
+// DOPO (l'advisor lavora prima del recruiter)
+const AGENTS = ["orchestrator", "jd_analyst", "cv_matcher", "evaluator", "advisor", "recruiter"];
 ```
 
-**Modifica** `frontend/src/components/UploadForm.tsx`: nel testo, `Four AI agents` diventa `Five AI agents`.
+```ts
+// nell'oggetto LABEL aggiungi una voce:
+advisor: "Career Advisor",
+```
+
+**Modifica** `frontend/src/components/UploadForm.tsx`: nel testo, `Five AI agents` diventa `Six AI agents`.
 
 > 💡 Anche senza questo passo tutto funziona: il log mostrerebbe il nome grezzo `advisor`.
 > `ResultView.tsx` **non** va toccato, perché mostra già `report.suggestions`.
@@ -143,7 +153,11 @@ const LABEL: Record<string, string> = {
 docker compose up -d --build
 ```
 
-Apri http://localhost:3000, carica un CV e incolla una job description (vedi `job_applications_test.md`).
+> 💡 Prima volta: crea il file `.env` con `cp .env.example .env` e scrivi la tua `ANTHROPIC_API_KEY`.
+> Le modifiche al backend (`backend/app`) si caricano da sole quando salvi il file. Quelle al frontend
+> richiedono di nuovo `--build`.
+
+Apri http://localhost:3000, carica un CV e incolla una job description (vedi `Exercise_2/job_applications_test.md`).
 
 **Cosa devi vedere:**
 - nel log live compare lo step **Career Advisor** dopo l'Evaluator;
@@ -155,7 +169,8 @@ Apri http://localhost:3000, carica un CV e incolla una job description (vedi `jo
 
 | Sintomo | Causa probabile | Soluzione |
 |---|---|---|
-| Non cambia niente, l'advisor non compare | Il container usa ancora il codice vecchio | `docker compose up -d --build` (senza `--build` il codice nuovo non entra nell'immagine) |
+| Non cambia niente, l'advisor non compare | Il container usa ancora il codice vecchio | Il backend si ricarica da solo, il frontend no: `docker compose up -d --build` |
+| Il risultato arriva subito e il log degli agenti resta vuoto | Stesso CV e stessa job description di una prova precedente: l'app riusa il risultato salvato, così lo score è sempre lo stesso | Il risultato salvato si svuota quando il server si riavvia (succede quando salvi un file in `backend/app`). Oppure cambia CV o job description |
 | `ModuleNotFoundError: app.agents.advisor` | File con nome o cartella sbagliati | Il file deve essere esattamente `backend/app/agents/advisor.py` |
 | L'orchestrator non chiama mai l'advisor | Manca in `ALLOWED_TOOLS` o in `SUB_AGENTS`, oppure manca il passo 4 nel prompt | Ricontrolla il Passo 2: servono **tutte e 4** le modifiche |
 | Errore di validazione su `suggestions` | L'orchestrator non ha messo l'array dell'advisor nel JSON finale | Ricontrolla il JSON finale nel prompt (2b) |

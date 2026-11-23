@@ -29,7 +29,7 @@ from app.agents.runner import run
 #         Its first argument is the agent name shown in the live log: use "recruiter".
 #
 # HOW TO TEST
-#   - Run the app, upload a CV, paste a job description (see exercise_guide/Exercise_2).
+#   - Run the app, upload a CV, paste a job description (see exercise_guide/test_data).
 #   - Done when the live log shows the "Recruiter" step finishing and the result page
 #     shows a list of interview questions.
 #   - If the app does not hot-reload your changes, stop it and start it again.

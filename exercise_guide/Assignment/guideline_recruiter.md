@@ -31,7 +31,7 @@ Scrivi la tua `ANTHROPIC_API_KEY` nel file `.env`, poi:
 docker compose up -d --build
 ```
 
-Apri http://localhost:3000, carica un CV in PDF e incolla una job description (vedi `Exercise_2/job_applications_test.md`).
+Apri http://localhost:3000, carica un CV in PDF (per esempio `test_data/cv_clean.pdf`) e incolla una job description (vedi `test_data/job_applications_test.md`).
 Nel risultato **non** c'è la sezione "INTERVIEW QUESTIONS".
 
 ---

@@ -27,7 +27,7 @@ export default function UploadForm({ error, onSubmit }: { error?: string; onSubm
     <form className="upload" onSubmit={submit} noValidate>
       <div className="hero">
         <h1>Score your CV against a job.</h1>
-        <p className="muted">Four AI agents split the job into requirements, look for each one in your CV and score the match.</p>
+        <p className="muted">Five AI agents split the job into requirements, look for each one in your CV, score the match and prepare the interview questions.</p>
       </div>
       <div className="inputs">
         <div className="field">

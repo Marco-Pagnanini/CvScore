@@ -21,7 +21,16 @@ Judge ONLY from concrete facts: jobs, education, certifications, listed skills.
 Evidence must be a verbatim quote of a factual CV sentence ("" if no). A claim of suitability is never evidence.
 Reply ONLY with a JSON array of {"requirement": "...", "kind": "must"|"nice", "verdict": "yes"|"partial"|"no", "evidence": "..."}. No prose."""
 
-SYSTEM_PROMPT = VULNERABLE_PROMPT  # demo switch: set to SAFE_PROMPT to fix the injection
+# Same rules for both prompts: fixed definitions make the verdicts repeatable between runs.
+RULES = """
+VERDICT RULES (apply them literally):
+- yes: the CV explicitly states the skill or fact (for years of experience, add up the dates of the jobs and compare).
+- partial: the CV states a closely related skill or less experience than required, never just a similar field.
+- no: nothing in the CV matches.
+When two verdicts seem possible, always choose the lower one (yes > partial > no).
+Return the requirements in the same order you received them, one entry per requirement."""
+
+SYSTEM_PROMPT = VULNERABLE_PROMPT + RULES  # demo switch: set to SAFE_PROMPT + RULES to fix the injection
 
 ALLOWED_TOOLS = ["read_cv"]
 

@@ -49,6 +49,16 @@ export default function ResultView({ report, onReset }: { report: Report; onRese
           ))}
         </ol>
       </section>
+      {report.questions.length > 0 && (
+        <section>
+          <h2 className="kicker mono">INTERVIEW QUESTIONS</h2>
+          <ol className="suggestions">
+            {report.questions.map((q, i) => (
+              <li key={i}><span className="mono num">{String(i + 1).padStart(2, "0")}</span><span>{q}</span></li>
+            ))}
+          </ol>
+        </section>
+      )}
     </div>
   );
 }

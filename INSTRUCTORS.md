@@ -4,8 +4,8 @@ This file exists only in the `solution` branch.
 
 ## Branches
 
-- `main`: the student version. `tools.py` has two empty TODOs (Exercise 1) and `recruiter.py` is a stub (Assignment).
-- `solution`: same as `main`, with `tools.py` and `recruiter.py` complete. When you change `main`, merge `main` into `solution`.
+- `main`: the student version. `tools.py` has `read_cv` written as a worked example and one TODO, `compute_score` (Exercise 1), and `recruiter.py` is a stub (Assignment).
+- `solution`: same as `main`, with `compute_score` in `tools.py` and `recruiter.py` complete. When you change `main`, merge `main` into `solution`.
 
 The only other place to edit by hand is Exercise 2: in `cv_matcher.py` the last line is
 `SYSTEM_PROMPT = VULNERABLE_PROMPT + RULES`. To switch to the safe prompt it becomes `SAFE_PROMPT + RULES`
@@ -27,7 +27,7 @@ requirements, and the recruiter's prompt must say how to use them. No other file
 
 ## Checks before the lesson
 
-- `docker compose exec backend pytest -q` is green (6 tests).
+- `docker compose exec backend pytest -q` is green (6 tests). On `main` the two `compute_score` tests of `test_tools.py` are red until the student writes the tool: that is expected.
 - With `test_data/cv_injected.pdf` and job description no. 6: vulnerable prompt versus safe prompt. Write down the real scores
   and compare them with the ones shown in the slides.
 - A full analysis shows the Recruiter step in the log and the INTERVIEW QUESTIONS section in the result.

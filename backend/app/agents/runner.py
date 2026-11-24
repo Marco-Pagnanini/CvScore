@@ -57,7 +57,7 @@ async def run(name: str, system_prompt: str, allowed_tools: list[str], task: str
                 if block.name in sub_agents:
                     text, is_error = await sub_agents[block.name](block.input["task"]), False
                 else:
-                    r = await mcp.call_tool(block.name, block.input)
+                    r = await mcp.call_tool(block.name, block.input) # sends an HTTP request to the MCP Server.
                     text = "\n".join(c.text for c in r.content if c.type == "text")
                     is_error = bool(r.is_error)
                 results.append({"type": "tool_result", "tool_use_id": block.id,

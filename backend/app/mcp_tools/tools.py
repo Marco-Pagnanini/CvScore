@@ -3,10 +3,12 @@ from app.models.cv import RequirementMatch, Score
 from app.services import cv, score
 
 # =====================================================================================
-# EXERCISE 1: write the two MCP tools
+# EXERCISE 1: write the MCP tool `compute_score`
 #
 # An MCP tool is a normal Python function that the agents can discover and call.
-# The imports above are already there: you write the two functions.
+# The imports above are already there, and so is `read_cv`: it is your worked example.
+# Read it first, then write `compute_score` in the same way.
+#
 # Each tool is the same four lines (see the slides):
 #   - the decorator that registers the function on the MCP server (`mcp`)
 #   - the signature, with type hints: they become the input/output schema of the tool
@@ -16,16 +18,20 @@ from app.services import cv, score
 # HOW TO TEST
 #   - docker compose exec backend pytest tests/test_tools.py -q   -> all green
 #   - rebuild if needed (docker compose up -d --build), upload a CV and run an analysis:
-#     if the agents find the tools, the analysis completes.
+#     if the Evaluator finds the tool, the analysis completes.
 # =====================================================================================
 
-# TODO 1: read_cv
-#   input:  cv_id (str)
-#   output: the plain text of the CV (str)
-#   body:   call cv.read_cv_text(cv_id)
+
+# EXAMPLE (already written): read_cv
+# The CV Matcher calls it to get the plain text of the CV.
+@mcp.tool()
+def read_cv(cv_id: str) -> str:
+    """Return the plain text of the uploaded CV."""
+    return cv.read_cv_text(cv_id)
 
 
-# TODO 2: compute_score
-#   input:  matches (list[RequirementMatch])
-#   output: Score
-#   body:   call score.compute_score(matches)
+# TODO: compute_score
+#   used by: the Evaluator, to turn the verdicts into a 0-100 score
+#   input:   matches (list[RequirementMatch])
+#   output:  Score
+#   body:    call score.compute_score(matches)

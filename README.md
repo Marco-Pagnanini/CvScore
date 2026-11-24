@@ -32,7 +32,7 @@ Open http://localhost:3000.
 
 | # | What you do | Where | How you know you are done |
 |---|---|---|---|
-| 1 | **Exercise 1**: write the two MCP tools `read_cv` and `compute_score` | `backend/app/mcp_tools/tools.py` | `docker compose exec backend pytest tests/test_tools.py -q` is green and an analysis of a CV completes |
+| 1 | **Exercise 1**: write the MCP tool `compute_score` (`read_cv` is already written, as an example) | `backend/app/mcp_tools/tools.py` | `docker compose exec backend pytest tests/test_tools.py -q` is green and an analysis of a CV completes |
 | 2 | **Exercise 2**: prompt injection, from `VULNERABLE_PROMPT` to `SAFE_PROMPT` | `backend/app/agents/cv_matcher.py` | With `test_data/cv_injected.pdf` the score changes between the two prompts |
 | 3 | **Assignment**: write the `recruiter` agent | `backend/app/agents/recruiter.py` | The INTERVIEW QUESTIONS section appears in the result. Guide: `exercise_guide/Assignment/guideline_recruiter.md` |
 
@@ -56,4 +56,4 @@ The same CV and the same job description always return the same report (in-memor
 docker compose exec backend pytest -q
 ```
 
-`test_score.py` checks the score formula, `test_tools.py` checks the MCP tools of Exercise 1.
+`test_score.py` checks the score formula, `test_tools.py` checks the MCP tools of Exercise 1 (the `compute_score` tests fail until you write it).

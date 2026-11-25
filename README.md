@@ -15,11 +15,11 @@ MCP server (/mcp) → services/cv.py (reads the PDF), services/score.py (the for
 
 ## Run it
 
-You need Git, an Anthropic API key and Docker Desktop (running). Docker is the only supported way to run the lab.
+You need Git, an Anthropic API key and Docker Desktop, open and running (nothing works otherwise). Docker is the only supported way to run the lab.
 
 ```bash
 cp .env.example .env        # on Windows (cmd): copy .env.example .env. Then write your ANTHROPIC_API_KEY in the .env file
-docker desktop start        # starts Docker Desktop and waits until it is ready (if it says "unknown command", open Docker Desktop by hand)
+docker info                 # open Docker Desktop first: this must print "Server: ...", not an error
 docker compose up -d --build
 ```
 

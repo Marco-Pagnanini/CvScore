@@ -27,7 +27,7 @@ requirements, and the recruiter's prompt must say how to use them. No other file
 
 ## Checks before the lesson
 
-- `docker compose exec backend pytest -q` is green (6 tests). On `main` the two `compute_score` tests of `test_tools.py` are red until the student writes the tool: that is expected.
+- `docker compose exec backend python -m pytest -q` is green (6 tests). On `main` the two `compute_score` tests of `test_tools.py` are red until the student writes the tool: that is expected.
 - With `test_data/cv_injected.pdf` and job description no. 6: vulnerable prompt versus safe prompt. Write down the real scores
   and compare them with the ones shown in the slides.
 - A full analysis shows the Recruiter step in the log and the INTERVIEW QUESTIONS section in the result.

@@ -15,7 +15,7 @@ MCP server (/mcp) → services/cv.py (reads the PDF), services/score.py (the for
 
 ## Run it
 
-You need Git, an Anthropic API key and Docker (the easy way). No Docker? See "Run it without Docker" below.
+You need Git, an Anthropic API key and Docker Desktop (running). Docker is the only supported way to run the lab.
 
 ```bash
 cp .env.example .env        # on Windows (cmd): copy .env.example .env. Then write your ANTHROPIC_API_KEY in the .env file
@@ -39,29 +39,6 @@ Open http://localhost:3000. Works the same on Linux, macOS and Windows (Docker D
 | You saved a file in `backend/app` but nothing changed | `docker compose restart backend` |
 | Tests: `No module named 'app'` | Run them from the project folder with `docker compose exec backend python -m pytest tests/test_tools.py -q` |
 
-### Run it without Docker
-
-You need Python 3.12 and Node 22. Run the backend and the frontend in two terminals.
-
-```bash
-cp .env.example .env        # then write your ANTHROPIC_API_KEY in the .env file
-
-# terminal 1: backend, from the project folder
-cd backend
-python3 -m venv .venv       # on Windows: py -m venv .venv
-source .venv/bin/activate   # on Windows: .venv\Scripts\activate
-pip install -r requirements.txt
-uvicorn app.main:app --reload --port 8000 --env-file ../.env
-
-# terminal 2: frontend, from the project folder
-cd frontend
-npm install
-npm run dev
-```
-
-Open http://localhost:5173. The backend reloads by itself when you save. To run the tests, activate the virtual
-environment, then `cd backend && python -m pytest tests/test_tools.py -q`.
-
 ## Clean up
 
 When you have finished, remove everything the lab created. From the project folder:
@@ -71,8 +48,6 @@ docker compose down --rmi all -v
 cd ..
 rm -rf CvScore              # on Windows: rmdir /s /q CvScore
 ```
-
-If you ran the project without Docker, only the last step is needed.
 
 ## The lab, in order
 

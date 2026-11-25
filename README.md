@@ -19,7 +19,7 @@ You need Git, an Anthropic API key and Docker Desktop (running). Docker is the o
 
 ```bash
 cp .env.example .env        # on Windows (cmd): copy .env.example .env. Then write your ANTHROPIC_API_KEY in the .env file
-docker info                 # must print "Server: ...". If it fails, start Docker Desktop and wait until it is running
+docker desktop start        # starts Docker Desktop and waits until it is ready (if it says "unknown command", open Docker Desktop by hand)
 docker compose up -d --build
 ```
 

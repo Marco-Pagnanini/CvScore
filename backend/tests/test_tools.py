@@ -2,7 +2,7 @@
 
 `read_cv` is given as an example; `compute_score` is the one you write: its tests stay red until you do.
 
-Run it with:  docker compose exec backend pytest tests/test_tools.py -q
+Run it with:  docker compose exec backend python -m pytest tests/test_tools.py -q
 """
 import asyncio
 import json

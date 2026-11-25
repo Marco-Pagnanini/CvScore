@@ -16,7 +16,7 @@ from app.services import cv, score
 #   - a body of one line, that calls the service (the logic stays in services/)
 #
 # HOW TO TEST
-#   - docker compose exec backend pytest tests/test_tools.py -q   -> all green
+#   - docker compose exec backend python -m pytest tests/test_tools.py -q   -> all green
 #   - rebuild if needed (docker compose up -d --build), upload a CV and run an analysis:
 #     if the Evaluator finds the tool, the analysis completes.
 # =====================================================================================

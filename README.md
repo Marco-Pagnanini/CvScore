@@ -15,24 +15,70 @@ MCP server (/mcp) → services/cv.py (reads the PDF), services/score.py (the for
 
 ## Run it
 
-You need Docker and an Anthropic API key.
+You need Git, an Anthropic API key and Docker (the easy way). No Docker? See "Run it without Docker" below.
 
 ```bash
-cp .env.example .env        # then write your ANTHROPIC_API_KEY in the .env file
+cp .env.example .env        # on Windows (cmd): copy .env.example .env. Then write your ANTHROPIC_API_KEY in the .env file
 docker compose up -d --build
 ```
 
-Open http://localhost:3000.
+Open http://localhost:3000. Works the same on Linux, macOS and Windows (Docker Desktop must be running).
 
 - Changes to `backend/app` reload by themselves when you save.
 - Changes to the frontend need `docker compose up -d --build` again.
 - Backend logs: `docker compose logs -f backend`.
 
+### If something goes wrong
+
+| Problem | Fix |
+|---|---|
+| `port is already allocated` / `address already in use` (3000 or 8000 is taken) | In `.env` add `FRONTEND_PORT=3001` and `BACKEND_PORT=8001`, run `docker compose up -d --build` again and open http://localhost:3001 |
+| `env file .env not found` | You skipped the first line: `cp .env.example .env` (Windows cmd: `copy .env.example .env`) |
+| `Cannot connect to the Docker daemon` / `error during connect` | Start Docker Desktop and wait until it says "running" |
+| The page opens but the analysis fails with an authentication error | The `ANTHROPIC_API_KEY` in `.env` is empty or wrong: fix it, then `docker compose up -d --force-recreate backend` |
+| You saved a file in `backend/app` but nothing changed | `docker compose restart backend` |
+| Tests: `No module named 'app'` | Run them from the project folder with `docker compose exec backend python -m pytest tests/test_tools.py -q` |
+
+### Run it without Docker
+
+You need Python 3.12 and Node 22. Run the backend and the frontend in two terminals.
+
+```bash
+cp .env.example .env        # then write your ANTHROPIC_API_KEY in the .env file
+
+# terminal 1: backend, from the project folder
+cd backend
+python3 -m venv .venv       # on Windows: py -m venv .venv
+source .venv/bin/activate   # on Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+uvicorn app.main:app --reload --port 8000 --env-file ../.env
+
+# terminal 2: frontend, from the project folder
+cd frontend
+npm install
+npm run dev
+```
+
+Open http://localhost:5173. The backend reloads by itself when you save. To run the tests, activate the virtual
+environment, then `cd backend && python -m pytest tests/test_tools.py -q`.
+
+## Clean up
+
+When you have finished, remove everything the lab created. From the project folder:
+
+```bash
+docker compose down --rmi all -v
+cd ..
+rm -rf CvScore              # on Windows: rmdir /s /q CvScore
+```
+
+If you ran the project without Docker, only the last step is needed.
+
 ## The lab, in order
 
 | # | What you do | Where | How you know you are done |
 |---|---|---|---|
-| 1 | **Exercise 1**: write the MCP tool `compute_score` (`read_cv` is already written, as an example) | `backend/app/mcp_tools/tools.py` | `docker compose exec backend pytest tests/test_tools.py -q` is green and an analysis of a CV completes |
+| 1 | **Exercise 1**: write the MCP tool `compute_score` (`read_cv` is already written, as an example) | `backend/app/mcp_tools/tools.py` | `docker compose exec backend python -m pytest tests/test_tools.py -q` is green and an analysis of a CV completes |
 | 2 | **Exercise 2**: prompt injection, from `VULNERABLE_PROMPT` to `SAFE_PROMPT` | `backend/app/agents/cv_matcher.py` | With `test_data/cv_injected.pdf` the score changes between the two prompts |
 | 3 | **Assignment**: write the `recruiter` agent | `backend/app/agents/recruiter.py` | The INTERVIEW QUESTIONS section appears in the result. Guide: `exercise_guide/Assignment/guideline_recruiter.md` |
 
@@ -53,7 +99,7 @@ The same CV and the same job description always return the same report (in-memor
 ## Tests
 
 ```bash
-docker compose exec backend pytest -q
+docker compose exec backend python -m pytest -q
 ```
 
 `test_score.py` checks the score formula, `test_tools.py` checks the MCP tools of Exercise 1 (the `compute_score` tests fail until you write it).
